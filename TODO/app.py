@@ -101,8 +101,9 @@ def updateDate():
     try:
         d1=datetime.strptime(y+'-'+m+'-'+d,'%Y-%m-%d').date()
         d2=datetime.strptime(s,'%d-%m-%Y').date()
-        if d2>d1:
+        if d2<d1:
             s=f.iloc[id-1,2]=d+'-'+m+'-'+y
+            f.to_csv("List.csv")
         else:
             return "date should be greater than the previos due date"
     except:
