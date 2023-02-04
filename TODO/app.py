@@ -7,8 +7,8 @@ app=Flask(__name__)
 
 #function to validate date
 def checkDate(d,m,y):
-    s=y+'-'+m+'-'+d
     try:
+        s=y+'-'+m+'-'+d
         dt=datetime.strptime(s,'%Y-%m-%d').date()
     except:
         return False
@@ -38,23 +38,22 @@ def getId():
 #add a new to the list
 @app.route("/add")
 def addTodo():
+    t=request.args.get("task")
+    d=request.args.get("date")
+    m=request.args.get("month")
+    y=request.args.get("year")
     try:
-        t=request.args.get("task")
-        d=request.args.get("date")
-        m=request.args.get("month")
-        y=request.args.get("year")
-    except:
-        return "Please enter parameterized data"
-    else:
         if len(t) == 0:
             return "task should not be empty"
-        if checkDate(d,m,y):
-            task=[getId(),t,"incomplete",d+"-"+m+"-"+y]
-            f=open("List.csv","a",newline='')
-            write=csv.writer(f)
-            write.writerow(task)
-            return "added"
-        return "Please enter correct date!!"
+    except:
+        return "please fill the task field"
+    if checkDate(d,m,y):
+        task=[getId(),t,"incomplete",d+"-"+m+"-"+y]
+        f=open("List.csv","a",newline='')
+        write=csv.writer(f)
+        write.writerow(task)
+        return "added"
+    return "Please enter correct date!!"
 
 #mark the task as completed/incomplete
 @app.route("/update/status")
