@@ -38,24 +38,31 @@ def getId():
 #add a new to the list
 @app.route("/add")
 def addTodo():
-    t=request.args.get("task")
-    d=request.args.get("date")
-    m=request.args.get("month")
-    y=request.args.get("year")
-    if len(t) == 0:
-        return "task should not be empty"
-    if checkDate(d,m,y):
-        task=[getId(),t,"incomplete",d+"-"+m+"-"+y]
-        f=open("List.csv","a",newline='')
-        write=csv.writer(f)
-        write.writerow(task)
-        return "added"
-    return "Please enter correct date!!"
+    try:
+        t=request.args.get("task")
+        d=request.args.get("date")
+        m=request.args.get("month")
+        y=request.args.get("year")
+    except:
+        return "Please enter parameterized data"
+    else:
+        if len(t) == 0:
+            return "task should not be empty"
+        if checkDate(d,m,y):
+            task=[getId(),t,"incomplete",d+"-"+m+"-"+y]
+            f=open("List.csv","a",newline='')
+            write=csv.writer(f)
+            write.writerow(task)
+            return "added"
+        return "Please enter correct date!!"
 
 #mark the task as completed/incomplete
-@app.route("/update/")
-def updateTodo():
-    id=int(request.args.get("id"))
+@app.route("/update/status")
+def updateStatus():
+    try:
+        id=int(request.args.get("id"))
+    except:
+        return "enter id correctly"
     temp=0
     try:
         f=p.read_csv("List.csv",index_col='id')
@@ -73,10 +80,42 @@ def updateTodo():
         else:
             return "task marked as incomplete"
 
+#extend the due date
+@app.route("/update/date")
+def updateDate():
+    try:
+        id=int(request.args.get("id"))
+    except:
+        return "enter id correctly"
+    try:
+        d=request.args.get("date")
+        m=request.args.get("month")
+        y=request.args.get("year")
+    except:
+        return "enter date properly"
+    try:
+        f=p.read_csv("List.csv",index_col="id")
+        s=f.iloc[id-1,2]
+    except:
+        return "task not present"
+    try:
+        d1=datetime.strptime(y+'-'+m+'-'+d,'%Y-%m-%d').date()
+        d2=datetime.strptime(s,'%d-%m-%Y').date()
+        if d2>d1:
+            s=f.iloc[id-1,2]=d+'-'+m+'-'+y
+        else:
+            return "date should be greater than the previos due date"
+    except:
+        return "not a valid date"
+    return "date updated"
+
 #remove a task
 @app.route("/remove/")
 def removeTask():
-    id=int(request.args.get("id"))
+    try:
+        id=int(request.args.get("id"))
+    except:
+        return "enter id correctly"
     try:
         f=p.read_csv("List.csv",index_col="id")
         f.drop(id,axis=0,inplace=True)
