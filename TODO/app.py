@@ -52,7 +52,8 @@ def addTodo():
         f=open("List.csv","a",newline='')
         write=csv.writer(f)
         write.writerow(task)
-        return "added"
+        s="added task successfully with an id = "+str(task[0])
+        return s
     return "Please enter correct date!!"
 
 #mark the task as completed/incomplete
@@ -110,7 +111,7 @@ def updateDate():
     return "date updated"
 
 #remove a task
-@app.route("/remove/")
+@app.route("/remove")
 def removeTask():
     try:
         id=int(request.args.get("id"))
@@ -142,7 +143,10 @@ def getTodo():
             x.append("status - "+task[2])
             x.append("due date - "+task[3])
             lt["id - "+task[0]]=x
-        return lt
+        if lt:
+            return lt
+        else:
+            return "No tasks"
 
 if __name__=="__main__":
     app.run()
