@@ -7,7 +7,7 @@
 >Flask
 
 #### About
-There are 5 apis.
+There are 5 api end points.
 - add a task in the list using the url ``http://127.0.0.1:5000/add?task=&date=&month=&year=`` 
 - update the status of the task using the url ``http://127.0.0.1:5000/update/status?id=``
 - update the due date of the task using the url ``http://127.0.0.1:5000/update/date?id=&date=&month=&year=``
